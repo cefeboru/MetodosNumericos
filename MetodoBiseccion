@@ -1,0 +1,57 @@
+from sympy.parsing.sympy_parser import parse_expr
+from sympy.parsing.sympy_parser import standard_transformations
+from sympy.parsing.sympy_parser import implicit_multiplication_application
+from sympy import Symbol
+from sympy.solvers import solve
+from math import ceil, floor, log10
+import matplotlib.pyplot as plt
+
+transformations = (standard_transformations + (implicit_multiplication_application,))
+
+x = Symbol('x')
+
+expresion = raw_input("Ingrese una expresion: ")
+
+expresion = parse_expr(expresion, transformations=transformations)
+
+intervalo = solve(expresion, x)
+
+a = [ceil(intervalo[0]) - 1]
+b = [floor(intervalo[0] + 1)]
+
+print "Hay una raiz en [%d,%d]" % (a[0], b[0])
+
+tol = float(input("Cuento sera la tolerancia del metodo? "))
+N = (log10((b[0] - a[0])/tol)/log10(2)) -1
+N = int(floor(N))
+
+P = []
+FP = []
+
+def evalPol(value):
+    resultado = 0.00
+    resultado = expresion.subs(x, value)
+    return float(resultado)
+
+for i in range(N):
+
+    P.append( (a[i] + b[i])/2 )
+    FP.append(evalPol(P[i]))
+    FA = evalPol(a[i])
+    print "n:%d a:%f  b:%f P: %f  F(P): %f " % (i+1, a[i], b[i], P[i], FP[i])
+
+    if FP[i] < 0:
+        #a.append(P[i])
+        #b.append(b[i])
+        a.append(a[i])
+        b.append(P[i])
+    elif FP[i] > 0:
+    	a.append(P[i])
+    	b.append(b[i])
+    elif FP == 0:
+    	print "Se encontro P:%d" % P[i]
+    	break
+
+plt.plot(0)
+plt.plot(FP,'o')
+plt.show()
