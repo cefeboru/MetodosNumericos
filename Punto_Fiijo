@@ -1,0 +1,46 @@
+from sympy.parsing.sympy_parser import parse_expr
+from sympy.parsing.sympy_parser import standard_transformations
+from sympy.parsing.sympy_parser import implicit_multiplication_application
+from sympy import Symbol
+from sympy.solvers import solve
+from sympy import diff
+from math import ceil, floor, log10
+
+transformations = (standard_transformations + (implicit_multiplication_application,))
+
+x = Symbol('x')
+
+
+expresion = raw_input("//////////////////////Punto Fijo//////////////////////\n\n"+"Ingrese una expresion: ")
+
+expresion = parse_expr(expresion, transformations=transformations)
+
+a = float(input("ingrese su primer punto: "))
+b = float(input("ingrese su segundo punto: "))
+
+print "\nSu intervalo es [%d,%d]" % (a, b)
+
+tol = float(input("Cuento sera la tolerancia del metodo? "))
+N = (log10((b - a)/tol)/log10(2)) -1
+N = int(floor(N))
+
+x0 = float(input("Ingrese el punto en que desea evaluar: "))
+
+def evalPol(value):
+    resultado = 0.00
+    resultado = expresion.subs(x, value)
+    return float(resultado)
+
+X0 = []
+gX0 = []
+
+for i in range(N):
+    if (i == 0):
+        X0.append(x0)
+        gX0.append(evalPol(x0))
+        print "\nn:%d X0:%f g(X0):%f " % (i,X0[i], gX0[i])
+    elif (i > 0):       
+        X0.append(gX0[i-1])
+        gX0.append(evalPol(gX0[i-1]))
+        print "n:%d X0:%f g(X0):%f " % (i,X0[i], gX0[i])
+        
