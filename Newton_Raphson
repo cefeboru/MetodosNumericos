@@ -1,0 +1,60 @@
+from sympy.parsing.sympy_parser import parse_expr
+from sympy.parsing.sympy_parser import standard_transformations
+from sympy.parsing.sympy_parser import implicit_multiplication_application
+from sympy import Symbol
+from sympy.solvers import solve
+from sympy import diff
+from math import ceil, floor, log10
+
+transformations = (standard_transformations + (implicit_multiplication_application,))
+
+x = Symbol('x')
+
+
+expresion = raw_input("//////////////////////Newton-Raphson//////////////////////\n\n"+"Ingrese una expresion: ")
+
+expresion = parse_expr(expresion, transformations=transformations)
+
+intervalo = solve(expresion, x)
+
+derivada = diff(expresion,x)
+
+a = [ceil(intervalo[0]) - 1]
+b = [floor(intervalo[0] + 1)]
+
+
+tol = float(input("Cuento sera la tolerancia del metodo? "))
+N = (log10((b[0] - a[0])/tol)/log10(2)) -1
+N = int(floor(N))
+
+Pn = float(input("Ingrese su P0: "))
+
+PN = []
+FPN = []
+FDPN = []
+PN1 = []
+
+def evalDer(value):
+    resultado = 0.00
+    derivada = diff(expresion,x)
+    resultado = derivada.subs(x, value)
+    return float(resultado)
+
+def evalPol(value):
+    resultado = 0.00
+    resultado = expresion.subs(x, value)
+    return float(resultado)
+
+for i in range(N):
+    if (i == 0):
+        PN.append(Pn)
+        FPN.append(evalPol(Pn))
+        FDPN.append(evalDer(Pn))
+        PN1.append(Pn - (FPN[i]/FDPN[i]))
+        print "\nn:%d Pn:%f f(Pn):%f f'(Pn):%f Pn+1:%f " % (i,PN[i], FPN[i], FDPN[i], PN1[i])
+    elif (i > 0):
+        PN.append(PN1[i-1])
+        FPN.append(evalPol(PN1[i-1]))
+        FDPN.append(evalDer(PN1[i-1]))
+        PN1.append(PN1[i-1] - (FPN[i]/FDPN[i]))
+        print "n:%d Pn:%f f(Pn):%f f'(Pn):%f Pn+1:%f " % (i,PN[i], FPN[i], FDPN[i], PN1[i])
