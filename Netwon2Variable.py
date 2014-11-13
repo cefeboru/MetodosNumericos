@@ -1,4 +1,4 @@
-#from sympy.parsing.sympy_parser import parse_expr
+from sympy.parsing.sympy_parser import parse_expr
 import numpy
 from numpy import linalg 
 from sympy.parsing.sympy_parser import standard_transformations
@@ -11,19 +11,16 @@ transformations = (standard_transformations + (implicit_multiplication_applicati
 x = Symbol('x')
 y = Symbol('y')
 
-f1 = 2*x**2 + y**2 -8
-f2 = x**2 - y**2 + x*y - 4
-#f1 = raw_input("Ingrese F1(x,y): ")
-#f2 = raw_input("Ingrese F2(x,y): ")
+f1 = raw_input("Ingrese F1(x,y): ")
+f2 = raw_input("Ingrese F2(x,y): ")
+tolerancia = input("Ingrese la tolerancia: ")
 
-#f1 = parse_expr(f1, transformations=transformations)
-#f2 = parse_expr(f2, transformations=transformations)
+f1 = parse_expr(f1, transformations=transformations)
+f2 = parse_expr(f2, transformations=transformations)
 
 
 X = [input("Ingrese X0: ")]
 Y = [input("Ingrese Y0: ")]
-
-N = input("Ingrese el numero de iteraciones: ")
 
 f1x = diff(f1, x)
 f1y = diff(f1, y)
@@ -67,12 +64,12 @@ def getD(xi,yi):
     else:
         return (f2y.subs([(x,xi),(y,yi)]))
     
-print "i\tXi\tYi\tF1(xi)\tF2(xi)\t"
+print "i\tXi\t\tYi\t\tF1(xi)\t\tF2(xi)"
 
-for i in range(N):
+for i in range(100):
     xi = X[i]
     yi = Y[i]
-    
+        
     a = getA(xi, yi)
     b = getB(xi, yi)
     c = getC(xi, yi)
@@ -87,4 +84,6 @@ for i in range(N):
     Xplus = XI - numpy.dot(jacobiano,Fs)
     X.append(Xplus[0])
     Y.append(Xplus[1])
-    print "%d\t%d\t%d\t%f\t%f" % (i,xi,yi,f1e,f2e)
+    print "%d\t%f\t%f\t%f\t%f" % (i,xi,yi,f1e,f2e)
+    if (abs(f1e) < tolerancia) and (abs(f2e) < tolerancia):
+        break
