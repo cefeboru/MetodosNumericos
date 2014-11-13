@@ -1,4 +1,6 @@
 #from sympy.parsing.sympy_parser import parse_expr
+import numpy
+from numpy import linalg 
 from sympy.parsing.sympy_parser import standard_transformations
 from sympy.parsing.sympy_parser import implicit_multiplication_application
 from sympy import Symbol
@@ -18,8 +20,8 @@ f2 = x**2 - y**2 + x*y - 4
 #f2 = parse_expr(f2, transformations=transformations)
 
 
-Xs = [input("Ingrese X0: ")]
-Ys = [input("Ingrese Y0: ")]
+X = [input("Ingrese X0: ")]
+Y = [input("Ingrese Y0: ")]
 
 N = input("Ingrese el numero de iteraciones: ")
 
@@ -33,34 +35,57 @@ b=0
 c=0
 d=0
 
-for i in range(N):
-    
+def getA(xi,yi):
     if "x" not in str(f1x.args):
-        a = f1x.subs(y, Ys[i])
+        return (f1x.subs(y, yi))
     elif "y" not in str(f1x.args):
-        a = f1x.subs(x, Xs[i])
+        return (f1x.subs(x, xi))
     else:
-        a = f1x.subs([(x,Xs[i]),(y,Ys[i])])
+        return (f1x.subs([(x,xi),(y,yi)]))
         
+def getB(xi,yi):
     if "x" not in str(f1y.args):
-        b = f1y.subs(y, Ys[i])
+        return (f1y.subs(y, yi))
     elif "y" not in str(f1y.args):
-        b = f1y.subs(x, Xs[i])
+        return (f1y.subs(x, xi))
     else:
-        b = f1y.subs([(x,Xs[i]),(y,Ys[i])])
+        return (f1y.subs([(x,xi),(y,yi)]))
         
+def getC(xi,yi):
     if "x" not in str(f2x.args):
-        c = f2x.subs(y, Ys[i])
+        return (f2x.subs(y, yi))
     elif "y" not in str(f2x.args):
-        c = f2x.subs(x, Xs[i])
+        return (f2x.subs(x, xi))
     else:
-        c = f2x.subs([(x,Xs[i]),(y,Ys[i])])
+        return (f2x.subs([(x,xi),(y,yi)]))
         
+def getD(xi,yi):
     if "x" not in str(f2y.args):
-        c = f2y.subs(y, Ys[i])
+        return (f2y.subs(y, yi))
     elif "y" not in str(f2y.args):
-        c = f2y.subs(x, Xs[i])
+        return (f2y.subs(x, xi))
     else:
-        c = f2y.subs([(x,Xs[i]),(y,Ys[i])])
-        
-    Xs.append(Xs[i] - 1/(a*d - c*b))
+        return (f2y.subs([(x,xi),(y,yi)]))
+    
+print "i\tXi\tYi\tF1(xi)\tF2(xi)\t"
+
+for i in range(N):
+    xi = X[i]
+    yi = Y[i]
+    
+    a = getA(xi, yi)
+    b = getB(xi, yi)
+    c = getC(xi, yi)
+    d = getD(xi, yi)
+    
+    jacobiano = linalg.inv( numpy.array([[a, b], [c, d]]) )
+    f1e = f1.subs([(x,xi),(y,yi)])
+    f2e = f2.subs([(x,xi),(y,yi)])
+    Fs = numpy.array([f1e,f2e]) 
+    XI = numpy.array([X[i],Y[i]])
+    
+    Xplus = XI - numpy.dot(jacobiano,Fs)
+    X.append(Xplus[0])
+    Y.append(Xplus[1])
+    print "%d\t%d\t%d\t%" % (i,xi,yi)
+    
