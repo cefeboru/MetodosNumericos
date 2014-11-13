@@ -87,5 +87,4 @@ for i in range(N):
     Xplus = XI - numpy.dot(jacobiano,Fs)
     X.append(Xplus[0])
     Y.append(Xplus[1])
-    print "%d\t%d\t%d\t%" % (i,xi,yi)
-    
+    print "%d\t%d\t%d\t%f\t%f" % (i,xi,yi,f1e,f2e)
