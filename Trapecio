@@ -1,0 +1,36 @@
+from sympy.parsing.sympy_parser import parse_expr
+from sympy import Symbol
+
+x = Symbol('x')
+
+expresion = raw_input("Ingrese una expresion: ")
+
+expresion = parse_expr(expresion)
+
+a = float(raw_input("Ingrese el valor de a: "))
+b = float(raw_input("Ingrese el valor de b: "))
+n = float(raw_input("Ingrese el valor de n: "))
+
+h = (b-a)/n
+
+def evalPol(value):
+    resultado = 0.00
+    resultado = expresion.subs(x, value)
+    return float(resultado)
+    
+sum = a + h
+
+fx = []
+fx.append(evalPol(a))
+
+while (sum < b):
+    fx.append(2*evalPol(sum))
+    sum += h
+
+fx.append(evalPol(b))
+
+result = 0.00
+for i in range(len(fx)):
+    result += fx[i]
+    
+print "I = %f" % ((h/2)*result)
