@@ -1,0 +1,72 @@
+from sympy.parsing.sympy_parser import parse_expr
+from sympy import Symbol
+
+x = Symbol('x')
+
+expresion = raw_input("Ingrese una expresion: ")
+
+expresion = parse_expr(expresion)
+
+noDerivadas = int(raw_input("Ingrese el numero de derivadas que desea "+
+                            "realizar: "))
+
+variableX = float(raw_input("Ingrese el valor de x: "))
+
+h = float(raw_input("Ingrese el valor de h: "))
+
+seleccion = raw_input("eliga su opcion:\na. Diferencia hacia adelante\nb. "+
+                           "b.Diferencia Centrada\n")
+
+def evalPol(value):
+    resultado = 0.00
+    resultado = expresion.subs(x, value)
+    return float(resultado)
+
+def DifAdelante(X, H):
+    xi = []
+    fx = []
+    der = []
+    sum = X
+    xi.append((X-H)-H)
+    xi.append(X-H)
+    for i in range(5):
+        xi.append(sum)
+        sum += H
+        
+    for i in range(7):
+        fx.append(evalPol(xi[i]))
+    
+    der.append((fx[3] - fx[2])/H)
+    der.append((fx[4] - 2*fx[3] + fx[2])/(H**2))
+    der.append((fx[5] - 3*fx[4] + 3*fx[3] - fx[2])/(H**3))
+    der.append((fx[6] - 4*fx[5] + 6*fx[4] - 4*fx[3] + fx[2])/(H**4))
+    return der
+
+def DifCentrada(X, H):
+    xi = []
+    fx = []
+    der = []
+    sum = X
+    xi.append((X-H)-H)
+    xi.append(X-H)
+    for i in range(5):
+        xi.append(sum)
+        sum += H
+        
+    for i in range(7):
+        fx.append(evalPol(xi[i]))
+    
+    der.append((fx[2] - fx[1])/2*H)
+    der.append((fx[3] - 2*fx[2] + fx[1])/2*H**2)
+    der.append((fx[4] - 2*fx[3] + 2*fx[1] - fx[0])/2*H**3)
+    der.append((fx[4] - 4*fx[3] + 6*fx[2] - 4*fx[1] + fx[0])/H**4)
+    return der
+
+if seleccion == 'a':
+    for i in range(noDerivadas):
+        print "\nf^:%d() = %f " % (i+1, DifAdelante(variableX, h)[i])
+elif seleccion == 'b':
+    for i in range(noDerivadas):
+        print "\nf^:%d() = %f " % (i+1, DifCentrada(variableX, h)[i])
+elif seleccion == 'c':
+    print "Yey"
