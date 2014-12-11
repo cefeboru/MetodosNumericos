@@ -68,5 +68,3 @@ if seleccion == 'a':
 elif seleccion == 'b':
     for i in range(noDerivadas):
         print "\nf^:%d() = %f " % (i+1, DifCentrada(variableX, h)[i])
-elif seleccion == 'c':
-    print "Yey"
