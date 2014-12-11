@@ -1,0 +1,52 @@
+from sympy.parsing.sympy_parser import parse_expr
+from sympy import Symbol
+
+x = Symbol('x')
+
+expresion = raw_input("Ingrese una expresion: ")
+
+expresion = parse_expr(expresion)
+
+a = float(raw_input("Ingrese el valor de a: "))
+b = float(raw_input("Ingrese el valor de b: "))
+
+h = (b-a)/2
+
+def evalPol(value):
+    resultado = 0.00
+    resultado = expresion.subs(x, value)
+    return float(resultado)
+    
+def SimpsonUnTercio():
+    fx = []
+    fx.append(evalPol(a))
+    fx.append(4*evalPol(a+h))
+    fx.append(evalPol(b))
+    
+    resultado = 0.00
+    for i in range(len(fx)):
+        resultado += fx[i]
+    return (h/3)*resultado
+    
+def SimpsonTresOctavos():
+    fx = []
+    sum = a
+    fx.append(evalPol(a))
+    sum += h
+    fx.append(3*evalPol(sum))
+    sum += h
+    fx.append(3*evalPol(sum))
+    fx.append(evalPol(b))
+    
+    resultado = 0.00
+    for i in range(len(fx)):
+        resultado += fx[i]
+    return ((3*h)/8)*resultado
+    
+seleccion = raw_input("eliga su opcion:\na. Simpson 1/3\nb. "+
+                           "b. Simpson 3/8\n")
+                           
+if seleccion == 'a':
+    print "I = %f" % SimpsonUnTercio()
+elif seleccion == 'b':
+    print "I = %f" % SimpsonTresOctavos()
